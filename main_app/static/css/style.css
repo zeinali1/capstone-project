@@ -1,0 +1,4 @@
+body { font-family: Arial, sans-serif; margin:20px; }
+nav a { margin-right: 15px; text-decoration: none; }
+.event-card { border: 1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:5px; }
+button { padding:5px 10px; margin-top:5px; }

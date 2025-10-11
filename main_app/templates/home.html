@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Upcoming Events</h2>
+{% for event in events %}
+    <div class="event-card">
+        <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a>
+        <p>{{ event.event_date|date:"F j, Y, g:i a" }} | {{ event.location }}</p>
+    </div>
+{% empty %}
+    <p>No upcoming events.</p>
+{% endfor %}
+
+<h3>Past Events</h3>
+{% for event in past_events %}
+    <div class="event-card">
+        <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a>
+        <p>{{ event.event_date|date:"F j, Y, g:i a" }} | {{ event.location }}</p>
+    </div>
+{% empty %}
+    <p>No past events.</p>
+{% endfor %}
+{% endblock %}

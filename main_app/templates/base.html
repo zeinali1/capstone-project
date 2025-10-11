@@ -18,7 +18,12 @@
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'create_event' %}">Add Event</a></li>
                     <li><a href="{% url 'my_joined_events' %}">My Events</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-btn">Logout</button>
+                        </form>
+                    </li>
                     <li class="welcome">Hi, {{ user.username }}</li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Login</a></li>

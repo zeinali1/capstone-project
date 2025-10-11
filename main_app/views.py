@@ -14,7 +14,7 @@ from .forms import EventForm, RegisterForm
 @login_required
 def home(request):
     events = Event.objects.all().order_by('event_date')
-    return render(request, 'events/home.html', {'events': events})
+    return render(request, 'home.html', {'events': events})
 
 @login_required
 def my_registrations(request):

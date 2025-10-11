@@ -73,3 +73,9 @@ class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         event = self.get_object()
         return self.request.user == event.created_by
+
+class JoinEventView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        Registration.objects.get_or_create(user=request.user, event=event)
+        return redirect('event_detail', pk=pk)

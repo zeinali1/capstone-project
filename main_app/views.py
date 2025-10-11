@@ -79,3 +79,9 @@ class JoinEventView(LoginRequiredMixin, View):
         event = get_object_or_404(Event, pk=pk)
         Registration.objects.get_or_create(user=request.user, event=event)
         return redirect('event_detail', pk=pk)
+
+class LeaveEventView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        Registration.objects.filter(user=request.user, event=event).delete()
+        return redirect('event_detail', pk=pk)

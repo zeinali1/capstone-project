@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>My Joined Events</h2>
+{% if registrations %}
+    {% for reg in registrations %}
+        <div class="event-card">
+            <a href="{% url 'event_detail' reg.event.id %}">{{ reg.event.title }}</a>
+            <p>{{ reg.event.event_date|date:"F j, Y, g:i a" }} | {{ reg.event.location }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>You haven’t joined any events yet.</p>
+{% endif %}
+{% endblock %}

@@ -21,6 +21,8 @@ def my_registrations(request):
     registrations = Registration.objects.filter(user=request.user)
     return render(request, 'events/my_registrations.html', {'registrations': registrations})
 
+
+
     
 class SignUpView(CreateView):
     form_class = RegisterForm

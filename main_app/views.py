@@ -1,7 +1,8 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.contrib.auth import login
 from django.views import View
@@ -10,14 +11,16 @@ from .models import Event, Registration
 from .forms import EventForm, RegisterForm
 
 # Create your views here.
-class HomeView(TemplateView):
-    template_name = 'home.html'
+@login_required
+def home(request):
+    events = Event.objects.all().order_by('event_date')
+    return render(request, 'events/home.html', {'events': events})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['events'] = Event.objects.filter(event_date__gte=timezone.now()).order_by('event_date')
-        context['past_events'] = Event.objects.filter(event_date__lt=timezone.now()).order_by('-event_date')[:5]
-        return context
+@login_required
+def my_registrations(request):
+    registrations = Registration.objects.filter(user=request.user)
+    return render(request, 'events/my_registrations.html', {'registrations': registrations})
+
     
 class SignUpView(CreateView):
     form_class = RegisterForm

@@ -1,24 +1,40 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventEase</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <nav>
-        <a href="{% url 'home' %}">Home</a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'create_event' %}">Add Event</a>
-            <a href="{% url 'my_joined_events' %}">My Events</a>
-            <a href="{% url 'logout' %}">Logout</a>
-            <span>Hi, {{ user.username }}</span>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'register' %}">Register</a>
-        {% endif %}
+        <div class="nav-container">
+            <div class="logo">
+                <a href="{% url 'home' %}">EventEase</a>
+            </div>
+            <ul class="nav-links">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'create_event' %}">Add Event</a></li>
+                    <li><a href="{% url 'my_joined_events' %}">My Events</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li class="welcome">Hi, {{ user.username }}</li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'signup' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
-    <hr>
-    {% block content %}{% endblock %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 EventEase | All rights reserved.</p>
+    </footer>
 </body>
 </html>

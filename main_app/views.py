@@ -93,3 +93,11 @@ class MyJoinedEventsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.request.user.registrations.select_related('event').order_by('event__event_date')
+    
+class PastEventsView(ListView):
+    model = Event
+    template_name = 'events/past_events.html'
+    context_object_name = 'events'
+
+    def get_queryset(self):
+        return Event.objects.filter(event_date__lt=timezone.now()).order_by('-event_date')

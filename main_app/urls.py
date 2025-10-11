@@ -14,4 +14,5 @@ urlpatterns = [
    path('event/<int:pk>/leave/', views.LeaveEventView.as_view(), name='leave_event'),
 
    path('my-events/', views.MyJoinedEventsView.as_view(), name='my_joined_events'),
+   path('past-events/', views.PastEventsView.as_view(), name='past_events'),
 ]

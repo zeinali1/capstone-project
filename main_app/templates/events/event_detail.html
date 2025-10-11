@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ event.title }}</h2>
+<p>{{ event.description }}</p>
+<p>Location: {{ event.location }}</p>
+<p>Date: {{ event.event_date|date:"F j, Y, g:i a" }}</p>
+<p>Created by: {{ event.created_by.username }}</p>
+
+{% if user.is_authenticated %}
+    {% if is_joined %}
+        <form action="{% url 'leave_event' event.id %}" method="post">{% csrf_token %}
+            <button type="submit">Leave Event</button>
+        </form>
+    {% else %}
+        <form action="{% url 'join_event' event.id %}" method="post">{% csrf_token %}
+            <button type="submit">Join Event</button>
+        </form>
+    {% endif %}
+
+    {% if user == event.created_by %}
+        <a href="{% url 'edit_event' event.id %}">Edit</a>
+        <form action="{% url 'delete_event' event.id %}" method="post" style="display:inline">{% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+    {% endif %}
+{% endif %}
+{% endblock %}

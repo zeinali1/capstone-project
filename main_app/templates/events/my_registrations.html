@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <h2>My Registered Events</h2>
+
+  {% if registrations %}
+    <table class="table mt-2">
+      <thead>
+        <tr>
+          <th>Event Title</th>
+          <th>Location</th>
+          <th>Date</th>
+          <th>Registered At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reg in registrations %}
+          <tr>
+            <td>{{ reg.event.title }}</td>
+            <td>{{ reg.event.location }}</td>
+            <td>{{ reg.event.event_date|date:"M d, Y H:i" }}</td>
+            <td>{{ reg.registered_at|date:"M d, Y H:i" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-muted">You haven’t registered for any events yet.</p>
+  {% endif %}
+
+  <div class="mt-2">
+    <a href="{% url 'home' %}" class="btn">← Back to Events</a>
+  </div>
+</div>
+{% endblock %}

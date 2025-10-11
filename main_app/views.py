@@ -85,3 +85,11 @@ class LeaveEventView(LoginRequiredMixin, View):
         event = get_object_or_404(Event, pk=pk)
         Registration.objects.filter(user=request.user, event=event).delete()
         return redirect('event_detail', pk=pk)
+
+class MyJoinedEventsView(LoginRequiredMixin, ListView):
+    model = Registration
+    template_name = 'events/my_joined_events.html'
+    context_object_name = 'registrations'
+
+    def get_queryset(self):
+        return self.request.user.registrations.select_related('event').order_by('event__event_date')

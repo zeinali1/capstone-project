@@ -70,6 +70,42 @@ nav {
     font-weight: 500;
 }
 
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-join {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-join:hover {
+    background-color: #0056b3;
+}
+
+.btn-leave {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-leave:hover {
+    background-color: #b02a37;
+}
+
+.btn-login {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-login:hover {
+    background-color: #1e7e34;
+}
+
 footer {
     background-color: #2c3e50;
     color: white;

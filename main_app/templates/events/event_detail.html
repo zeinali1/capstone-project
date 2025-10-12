@@ -1,27 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{{ event.title }}</h2>
-<p>{{ event.description }}</p>
-<p>Location: {{ event.location }}</p>
-<p>Date: {{ event.event_date|date:"F j, Y, g:i a" }}</p>
-<p>Created by: {{ event.created_by.username }}</p>
+<div class="event-detail">
+    <h1>{{ event.title }}</h1>
+    <p><strong>Date:</strong> {{ event.event_date }}</p>
+    <p><strong>Location:</strong> {{ event.location }}</p>
+    <p><strong>Description:</strong> {{ event.description }}</p>
 
-{% if user.is_authenticated %}
-    {% if is_joined %}
-        <form action="{% url 'leave_event' event.id %}" method="post">{% csrf_token %}
-            <button type="submit">Leave Event</button>
-        </form>
+    {% if user.is_authenticated %}
+        {% if is_creator %}
+            <p><em>You created this event.</em></p>
+            <p><strong>Participants Joined:</strong> {{ participant_count }}</p>
+            <a href="{% url 'update_event' event.pk %}" class="btn btn-edit">Edit</a>
+            <a href="{% url 'delete_event' event.pk %}" class="btn btn-delete">Delete</a>
+        {% else %}
+            {% if is_joined %}
+                <form action="{% url 'leave_event' event.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-leave">Leave Event</button>
+                </form>
+            {% else %}
+                <form action="{% url 'join_event' event.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-join">Join Event</button>
+                </form>
+            {% endif %}
+        {% endif %}
     {% else %}
-        <form action="{% url 'join_event' event.id %}" method="post">{% csrf_token %}
-            <button type="submit">Join Event</button>
-        </form>
+        <p><a href="{% url 'login' %}">Log in</a> to join this event.</p>
     {% endif %}
-
-    {% if user == event.created_by %}
-        <a href="{% url 'edit_event' event.id %}">Edit</a>
-        <form action="{% url 'delete_event' event.id %}" method="post" style="display:inline">{% csrf_token %}
-            <button type="submit">Delete</button>
-        </form>
-    {% endif %}
-{% endif %}
+</div>
 {% endblock %}

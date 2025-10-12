@@ -53,7 +53,13 @@ class EventDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         event = self.get_object()
         user = self.request.user
-        context['is_joined'] = user.is_authenticated and Registration.objects.filter(user=user, event=event).exists()
+
+        context['is_joined'] = (
+            user.is_authenticated
+            and Registration.objects.filter(user=user, event=event).exists()
+        )
+        context['is_creator'] = user.is_authenticated and event.created_by == user
+        context['participant_count'] = event.registrations.count()
         return context
     
 class EventCreateView(LoginRequiredMixin, CreateView):
@@ -80,22 +86,18 @@ class EventUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('event_detail', kwargs={'pk': self.object.pk})
 
-class EventDetailView(DetailView):
+class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Event
-    template_name = 'events/event_detail.html'
-    context_object_name = 'event'
+    template_name = 'events/event_confirm_delete.html'
+    success_url = reverse_lazy('home')
+
+    def test_func(self):
+        event = self.get_object()
+        return event.created_by == self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = self.get_object()
-        user = self.request.user
-
-        context['is_joined'] = (
-            user.is_authenticated
-            and Registration.objects.filter(user=user, event=event).exists()
-        )
-        context['is_creator'] = user.is_authenticated and event.created_by == user
-        context['participant_count'] = event.registrations.count()
+        context['event'] = self.get_object()
         return context
 
 class JoinEventView(LoginRequiredMixin, View):

@@ -12,8 +12,14 @@ from .forms import EventForm, RegisterForm
 
 # Create your views here.
 def home(request):
-    events = Event.objects.all().order_by('event_date')
-    return render(request, 'home.html', {'events': events})
+    current_time = timezone.now()
+    upcoming_events = Event.objects.filter(event_date__gte=current_time).order_by('event_date')
+    past_events = Event.objects.filter(event_date__lt=current_time).order_by('-event_date')
+
+    return render(request, 'home.html', {
+        'upcoming_events': upcoming_events,
+        'past_events': past_events
+    })
 
 @login_required
 def my_registrations(request):

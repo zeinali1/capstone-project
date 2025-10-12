@@ -16,7 +16,15 @@ def home(request):
     upcoming_events = Event.objects.filter(event_date__gte=current_time).order_by('event_date')
     past_events = Event.objects.filter(event_date__lt=current_time).order_by('-event_date')
 
-    return render(request, 'home.html', {
+    if request.user.is_authenticated:
+        joined_event_ids = Registration.objects.filter(user=request.user).values_list('event_id', flat=True)
+        for event in upcoming_events:
+            event.is_joined = event.id in joined_event_ids
+    else:
+        for event in upcoming_events:
+            event.is_joined = False
+
+    return render(request, 'events/home.html', {
         'upcoming_events': upcoming_events,
         'past_events': past_events
     })

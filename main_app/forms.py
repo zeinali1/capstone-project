@@ -6,7 +6,16 @@ from .models import Event
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'location', 'event_date']
+        fields = ['title', 'description', 'event_date', 'location']
+        widgets = {
+            'event_date': forms.DateTimeInput(
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'Select date and time'
+                }
+            ),
+        }
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)

@@ -11,7 +11,6 @@ from .models import Event, Registration
 from .forms import EventForm, RegisterForm
 
 # Create your views here.
-@login_required
 def home(request):
     events = Event.objects.all().order_by('event_date')
     return render(request, 'home.html', {'events': events})

@@ -2,6 +2,7 @@
 {% block content %}
 
 <h1>Upcoming Events</h1>
+
 {% if upcoming_events %}
     <ul class="event-list">
         {% for event in upcoming_events %}
@@ -10,17 +11,18 @@
             <p>{{ event.description|truncatewords:20 }}</p>
             <p><strong>Date:</strong> {{ event.event_date|date:"M d, Y H:i" }}</p>
             <p><strong>Location:</strong> {{ event.location }}</p>
+            <p><strong>Created by:</strong> {{ event.created_by.username }}</p>
 
             {% if user.is_authenticated %}
-                {% if event.registrations.filter(user=user).exists %}
+                {% if event.is_joined %}
                     <form action="{% url 'leave_event' event.id %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-leave">Leave</button>
+                        <button type="submit" class="btn btn-leave">Leave Event</button>
                     </form>
                 {% else %}
                     <form action="{% url 'join_event' event.id %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-join">Join</button>
+                        <button type="submit" class="btn btn-join">Join Event</button>
                     </form>
                 {% endif %}
             {% else %}
@@ -30,11 +32,11 @@
         {% endfor %}
     </ul>
 {% else %}
-    <p>No upcoming events.</p>
+    <p>No upcoming events available.</p>
 {% endif %}
 
-
 <hr>
+
 <h1>Past Events</h1>
 {% if past_events %}
     <ul class="event-list">
@@ -44,6 +46,7 @@
             <p>{{ event.description|truncatewords:20 }}</p>
             <p><strong>Date:</strong> {{ event.event_date|date:"M d, Y H:i" }}</p>
             <p><strong>Location:</strong> {{ event.location }}</p>
+            <p><strong>Created by:</strong> {{ event.created_by.username }}</p>
         </li>
         {% endfor %}
     </ul>

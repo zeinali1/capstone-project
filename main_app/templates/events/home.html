@@ -3,6 +3,17 @@
 
 {% block content %}
 <div class="container">
+
+    <div class="search-section">
+        <form method="get" action="{% url 'home' %}">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by title or location..." class="search-input">
+            <button type="submit" class="search-btn">Search</button>
+            {% if query %}
+                <a href="{% url 'home' %}" class="clear-btn">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
     <h1 class="page-title">Upcoming Events</h1>
 
     {% if upcoming_events %}

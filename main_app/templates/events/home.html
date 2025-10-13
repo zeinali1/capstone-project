@@ -26,9 +26,8 @@
 
                     {% if user.is_authenticated %}
                         {% if event.created_by == user %}
-                            <p class="welcome">You created this event</p>
-                            <a href="{% url 'event_update' event.pk %}" class="btn btn-edit">Edit</a>
-                            <a href="{% url 'event_delete' event.pk %}" class="btn btn-leave" style="background-color:#f44336;">Delete</a>
+                            <a href="{% url 'edit_event' event.pk %}" class="btn btn-edit">Edit</a>
+                            <a href="{% url 'delete_event' event.pk %}" class="btn btn-leave" style="background-color:#f44336;">Delete</a>
                         {% elif event.is_joined %}
                             <form action="{% url 'leave_event' event.pk %}" method="post">
                                 {% csrf_token %}

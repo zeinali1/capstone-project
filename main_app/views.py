@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.db.models import Count, Q
 from django.contrib.auth import login
 from django.views import View
 
@@ -13,46 +14,36 @@ from .forms import EventForm, RegisterForm
 # Create your views here.
 def home(request):
     current_time = timezone.now()
-    query = request.GET.get('q', '')
+    query = request.GET.get('q', '').strip()  # for title/location search
+    date_query = request.GET.get('date', '').strip()  # for date search (YYYY-MM-DD)
 
-    # Filter events
-    upcoming_events = Event.objects.filter(event_date__gte=current_time).order_by('event_date')
-    past_events = Event.objects.filter(event_date__lt=current_time).order_by('-event_date')
+    upcoming_events = Event.objects.filter(event_date__gte=current_time).annotate(attendee_count=Count('registrations')).order_by('event_date')
+    past_events = Event.objects.filter(event_date__lt=current_time).annotate(attendee_count=Count('registrations')).order_by('-event_date')
 
-    # Apply search filter
     if query:
-        upcoming_events = upcoming_events.filter(
-            title__icontains=query
-        ) | upcoming_events.filter(
-            location__icontains=query
-        )
-        past_events = past_events.filter(
-            title__icontains=query
-        ) | past_events.filter(
-            location__icontains=query
-        )
+        search_filter = Q(title__icontains=query) | Q(location__icontains=query)
+        upcoming_events = upcoming_events.filter(search_filter)
+        past_events = past_events.filter(search_filter)
 
-    # Add joined/mine flags
+    if date_query:
+        upcoming_events = upcoming_events.filter(event_date__date=date_query)
+        past_events = past_events.filter(event_date__date=date_query)
+
     if request.user.is_authenticated:
         joined_event_ids = Registration.objects.filter(user=request.user).values_list('event_id', flat=True)
-        for event in upcoming_events:
-            event.is_joined = event.id in joined_event_ids
-            event.is_mine = event.created_by == request.user
-        for event in past_events:
+        for event in list(upcoming_events) + list(past_events):
             event.is_joined = event.id in joined_event_ids
             event.is_mine = event.created_by == request.user
     else:
-        for event in upcoming_events:
-            event.is_joined = False
-            event.is_mine = False
-        for event in past_events:
+        for event in list(upcoming_events) + list(past_events):
             event.is_joined = False
             event.is_mine = False
 
     return render(request, 'events/home.html', {
         'upcoming_events': upcoming_events,
         'past_events': past_events,
-        'query': query
+        'query': query,
+        'date_query': date_query
     })
 
 @login_required

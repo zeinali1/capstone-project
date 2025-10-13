@@ -4,7 +4,6 @@
 <div class="container" style="max-width: 800px; margin: 40px auto;">
     <h1 style="text-align: center; color: #2c3e50;">Upcoming Events</h1>
 
-    <!-- Search Section -->
     <div class="search-section">
         <form method="get" action="{% url 'home' %}">
             <input type="text" name="q" class="search-input" placeholder="Search by title or location" value="{{ request.GET.q }}">
@@ -16,13 +15,13 @@
         </form>
     </div>
 
-    <!-- Upcoming Events -->
     {% if upcoming_events %}
         <ul class="event-list">
             {% for event in upcoming_events %}
                 <li class="event-card">
                     <p><strong><a href="{% url 'event_detail' event.pk %}" style="color:#2c3e50; text-decoration:none;">{{ event.title }}</a></strong></p>
                     <p>{{ event.location }} — {{ event.event_date|date:"M d, Y H:i" }}</p>
+                    <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
                     <p><em>Created by {{ event.created_by.username }}</em></p>
 
                     {% if user.is_authenticated %}
@@ -53,7 +52,6 @@
 
     <hr style="margin: 40px auto; width: 60%; border-top: 1px solid #ccc;">
 
-    <!-- Past Events -->
     <h2 style="text-align: center; color: #2c3e50;">Past Events</h2>
 
     {% if past_events %}
@@ -62,6 +60,7 @@
                 <li class="event-card past">
                     <p><strong>{{ event.title }}</strong></p>
                     <p>{{ event.location }} — {{ event.event_date|date:"M d, Y H:i" }}</p>
+                    <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
                     <p><em>Created by {{ event.created_by.username }}</em></p>
                 </li>
             {% endfor %}

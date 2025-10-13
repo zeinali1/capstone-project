@@ -20,13 +20,21 @@ def home(request):
         joined_event_ids = Registration.objects.filter(user=request.user).values_list('event_id', flat=True)
         for event in upcoming_events:
             event.is_joined = event.id in joined_event_ids
+            event.is_mine = event.created_by == request.user
+        for event in past_events:
+            event.is_joined = event.id in joined_event_ids
+            event.is_mine = event.created_by == request.user
     else:
         for event in upcoming_events:
             event.is_joined = False
+            event.is_mine = False
+        for event in past_events:
+            event.is_joined = False
+            event.is_mine = False
 
     return render(request, 'events/home.html', {
         'upcoming_events': upcoming_events,
-        'past_events': past_events
+        'past_events': past_events,
     })
 
 @login_required

@@ -69,6 +69,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eventease_project.wsgi.application'
 
+import os
+from dotenv import load_dotenv
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -76,9 +82,9 @@ WSGI_APPLICATION = 'eventease_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'events',  # Name of your PostgreSQL database
+        'NAME': os.getenv('DB_NAME'),  # Name of your PostgreSQL database
         'USER': 'postgres',
-        'PASSWORD': 'H0612z',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': 'localhost',  
         'PORT': '5432',
     }

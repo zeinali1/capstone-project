@@ -1,89 +1,74 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block content %}
-<div class="container">
 
+<div class="container" style="max-width: 800px; margin: 40px auto;">
+    <h1 style="text-align: center; color: #2c3e50;">Upcoming Events</h1>
+
+    <!-- Search Section -->
     <div class="search-section">
-        <form method="get" class="search-form">
-            <input type="text" name="q" placeholder="Search by title or location" value="{{ query }}">
-            <input type="date" name="date" value="{{ date_query }}">
-            <button type="submit">Search</button>
-            {% if query or date_query %}
-            <a href="{% url 'home' %}" class="clear-btn">Clear</a>
+        <form method="get" action="{% url 'home' %}">
+            <input type="text" name="q" class="search-input" placeholder="Search by title or location" value="{{ request.GET.q }}">
+            <input type="date" name="date" class="search-input" value="{{ request.GET.date }}">
+            <button type="submit" class="search-btn">Search</button>
+            {% if request.GET.q or request.GET.date %}
+                <a href="{% url 'home' %}" class="clear-btn">Clear</a>
             {% endif %}
         </form>
     </div>
 
-    <h1 class="page-title">Upcoming Events</h1>
-
+    <!-- Upcoming Events -->
     {% if upcoming_events %}
-        <div class="event-list">
+        <ul class="event-list">
             {% for event in upcoming_events %}
-                <div class="event-card">
-                    <h2>{{ event.title }}</h2>
-                    <p><strong>Date:</strong> {{ event.event_date|date:"F j, Y, g:i A" }}</p>
-                    <p><strong>Location:</strong> {{ event.location }}</p>
-                    <p><strong>Created by:</strong> {{ event.created_by.username }}</p>
-                    {% if event.is_mine %}
-                    <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
-                    {% endif %}
+                <li class="event-card">
+                    <p><strong><a href="{% url 'event_detail' event.pk %}" style="color:#2c3e50; text-decoration:none;">{{ event.title }}</a></strong></p>
+                    <p>{{ event.location }} — {{ event.event_date|date:"M d, Y H:i" }}</p>
+                    <p><em>Created by {{ event.created_by.username }}</em></p>
 
-                    <div class="event-actions">
-                        {% if event.is_mine %}
-                            <a href="{% url 'edit_event' event.id %}" class="btn edit-btn">Edit</a>
-                            <form method="post" action="{% url 'delete_event' event.id %}" style="display:inline;">
+                    {% if user.is_authenticated %}
+                        {% if event.created_by == user %}
+                            <p class="welcome">You created this event</p>
+                            <a href="{% url 'event_update' event.pk %}" class="btn btn-edit">Edit</a>
+                            <a href="{% url 'event_delete' event.pk %}" class="btn btn-leave" style="background-color:#f44336;">Delete</a>
+                        {% elif event.is_joined %}
+                            <form action="{% url 'leave_event' event.pk %}" method="post">
                                 {% csrf_token %}
-                                <button type="submit" class="btn delete-btn">Delete</button>
+                                <button type="submit" class="btn btn-leave">Leave</button>
                             </form>
-                        {% elif user.is_authenticated %}
-                            {% if event.is_joined %}
-                                <form method="post" action="{% url 'leave_event' event.id %}" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn leave-btn">Leave</button>
-                                </form>
-                            {% else %}
-                                <form method="post" action="{% url 'join_event' event.id %}" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn join-btn">Join</button>
-                                </form>
-                            {% endif %}
                         {% else %}
-                            <p><a href="{% url 'login' %}">Login to join</a></p>
+                            <form action="{% url 'join_event' event.pk %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-join">Join</button>
+                            </form>
                         {% endif %}
-                    </div>
-                </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-login">Login to join</a>
+                    {% endif %}
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     {% else %}
-        <p>No upcoming events found.</p>
+        <p style="text-align:center; color:#555;">No upcoming events found.</p>
     {% endif %}
 
-    <hr>
+    <hr style="margin: 40px auto; width: 60%; border-top: 1px solid #ccc;">
 
-    <h1 class="page-title">Past Events</h1>
+    <!-- Past Events -->
+    <h2 style="text-align: center; color: #2c3e50;">Past Events</h2>
 
     {% if past_events %}
-        <div class="event-list">
+        <ul class="event-list">
             {% for event in past_events %}
-                <div class="event-card past">
-                    <h2>{{ event.title }}</h2>
-                    <p><strong>Date:</strong> {{ event.event_date|date:"F j, Y, g:i A" }}</p>
-                    <p><strong>Location:</strong> {{ event.location }}</p>
-                    <p><strong>Created by:</strong> {{ event.created_by.username }}</p>
-
-                    <div class="event-actions">
-                        {% if event.is_mine %}
-                            <span class="badge">Your Event</span>
-                        {% elif event.is_joined %}
-                            <span class="badge">You Attended</span>
-                        {% endif %}
-                    </div>
-                </div>
+                <li class="event-card past">
+                    <p><strong>{{ event.title }}</strong></p>
+                    <p>{{ event.location }} — {{ event.event_date|date:"M d, Y H:i" }}</p>
+                    <p><em>Created by {{ event.created_by.username }}</em></p>
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     {% else %}
-        <p>No past events yet.</p>
+        <p style="text-align:center; color:#555;">No past events available.</p>
     {% endif %}
 </div>
+
 {% endblock %}

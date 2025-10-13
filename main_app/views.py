@@ -13,9 +13,26 @@ from .forms import EventForm, RegisterForm
 # Create your views here.
 def home(request):
     current_time = timezone.now()
+    query = request.GET.get('q', '')
+
+    # Filter events
     upcoming_events = Event.objects.filter(event_date__gte=current_time).order_by('event_date')
     past_events = Event.objects.filter(event_date__lt=current_time).order_by('-event_date')
 
+    # Apply search filter
+    if query:
+        upcoming_events = upcoming_events.filter(
+            title__icontains=query
+        ) | upcoming_events.filter(
+            location__icontains=query
+        )
+        past_events = past_events.filter(
+            title__icontains=query
+        ) | past_events.filter(
+            location__icontains=query
+        )
+
+    # Add joined/mine flags
     if request.user.is_authenticated:
         joined_event_ids = Registration.objects.filter(user=request.user).values_list('event_id', flat=True)
         for event in upcoming_events:
@@ -35,6 +52,7 @@ def home(request):
     return render(request, 'events/home.html', {
         'upcoming_events': upcoming_events,
         'past_events': past_events,
+        'query': query
     })
 
 @login_required

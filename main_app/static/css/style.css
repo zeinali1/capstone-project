@@ -90,6 +90,14 @@ nav {
     opacity: 0.85;
 }
 
+.event-card p strong {
+    color: #333;
+}
+
+.event-card p {
+    margin: 5px 0;
+}
+
 .btn {
     display: inline-block;
     margin-top: 0.5rem;
@@ -118,11 +126,6 @@ nav {
 
 .btn:hover {
     opacity: 0.9;
-}
-.participants-count {
-    font-size: 0.9em;
-    color: #555;
-    margin-top: 4px;
 }
 
 .btn-edit {

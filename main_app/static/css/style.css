@@ -1,3 +1,4 @@
+/* General Body & Navigation */
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #f8f9fa;
@@ -70,23 +71,31 @@ nav {
     font-weight: 500;
 }
 
+/* Event List & Cards */
 .event-list {
     list-style: none;
     padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .event-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
 
 .event-card.past {
-    background-color: #f8f8f8;
-    border-left: 5px solid #bbb;
+    background-color: #f0f0f0;
+    border-left: 5px solid #b0b0b0;
     opacity: 0.85;
 }
 
@@ -98,49 +107,75 @@ nav {
     margin: 5px 0;
 }
 
+/* Buttons */
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
 .btn {
     display: inline-block;
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 8px 16px;
     border: none;
-    border-radius: 5px;
-    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-}
-
-.btn-join {
-    background-color: #28a745;
-    color: white;
-}
-
-.btn-leave {
-    background-color: #dc3545;
-    color: white;
-}
-
-.btn-login {
-    background-color: #007bff;
-    color: white;
-}
-
-.btn:hover {
-    opacity: 0.9;
-}
-
-.btn-edit {
-    background-color: #4caf50;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
     text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Edit Button - dark/nav color */
+.btn-edit {
+    background-color: #2c3e50;
+    color: #fff;
 }
 
 .btn-edit:hover {
-    background-color: #43a047;
+    background-color: #1b2a3a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
+/* Delete / Leave Button - red accent */
+.btn-delete, .btn-leave {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-delete:hover, .btn-leave:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+/* Join Button - green accent */
+.btn-join {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.btn-join:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+/* Login Button - gold/orange */
+.btn-login {
+    background-color: #f39c12;
+    color: #fff;
+}
+
+.btn-login:hover {
+    background-color: #d88c0c;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+/* Search Section */
 .search-section {
     margin-bottom: 25px;
     text-align: center;
@@ -150,47 +185,39 @@ nav {
     width: 300px;
     padding: 8px 10px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
 }
 
 .search-btn {
-    background-color: #007bff;
+    background-color: #2c3e50;
     color: white;
-    padding: 8px 12px;
+    padding: 8px 16px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    margin-left: 5px;
 }
 
 .search-btn:hover {
-    background-color: #0056b3;
+    background-color: #1b2a3a;
 }
 
 .clear-btn {
-    background-color: #f44336;
+    background-color: #dc3545;
     color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
     text-decoration: none;
     margin-left: 5px;
 }
 
 .clear-btn:hover {
-    background-color: #c62828;
+    background-color: #c82333;
 }
 
-.badge {
-    display: inline-block;
-    background-color: #f39c12;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    margin-left: 5px;
-}
-
+/* Footer */
 footer {
     background-color: #2c3e50;
     color: white;

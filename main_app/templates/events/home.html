@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container" style="max-width: 800px; margin: 40px auto;">
+<div class="container" style="max-width: 900px; margin: 40px auto;">
     <h1 style="text-align: center; color: #2c3e50;">Upcoming Events</h1>
 
     <div class="search-section">
@@ -24,24 +24,26 @@
                     <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
                     <p><em>Created by {{ event.created_by.username }}</em></p>
 
-                    {% if user.is_authenticated %}
-                        {% if event.created_by == user %}
-                            <a href="{% url 'edit_event' event.pk %}" class="btn btn-edit">Edit</a>
-                            <a href="{% url 'delete_event' event.pk %}" class="btn btn-leave" style="background-color:#f44336;">Delete</a>
-                        {% elif event.is_joined %}
-                            <form action="{% url 'leave_event' event.pk %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-leave">Leave</button>
-                            </form>
+                    <div class="btn-row">
+                        {% if user.is_authenticated %}
+                            {% if event.created_by == user %}
+                                <a href="{% url 'edit_event' event.pk %}" class="btn btn-edit">Edit</a>
+                                <a href="{% url 'delete_event' event.pk %}" class="btn btn-delete">Delete</a>
+                            {% elif event.is_joined %}
+                                <form action="{% url 'leave_event' event.pk %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-leave">Leave</button>
+                                </form>
+                            {% else %}
+                                <form action="{% url 'join_event' event.pk %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-join">Join</button>
+                                </form>
+                            {% endif %}
                         {% else %}
-                            <form action="{% url 'join_event' event.pk %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-join">Join</button>
-                            </form>
+                            <a href="{% url 'login' %}" class="btn btn-login">Login to join</a>
                         {% endif %}
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-login">Login to join</a>
-                    {% endif %}
+                    </div>
                 </li>
             {% endfor %}
         </ul>

@@ -10,7 +10,7 @@
         {% if is_creator %}
             <p><em>You created this event.</em></p>
             <p><strong>Participants Joined:</strong> {{ participant_count }}</p>
-            <a href="{% url 'update_event' event.pk %}" class="btn btn-edit">Edit</a>
+            <a href="{% url 'edit_event' event.pk %}" class="btn btn-edit">Edit</a>
             <a href="{% url 'delete_event' event.pk %}" class="btn btn-delete">Delete</a>
         {% else %}
             {% if is_joined %}

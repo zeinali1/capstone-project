@@ -1,207 +1,154 @@
-# 🎟️ EventEase
+# EventEase – Online Event Management System
 
-## 🧩 Project Overview and Description
+## 📘 Project Overview
+EventEase is a modern web-based event management system built with Django.  
+It allows users to **create, browse, join, and manage events** easily.  
+Visitors can explore upcoming events, while registered users can host, edit, and participate in events.
 
-**EventEase** is a web-based event management platform built with Django.  
-It allows users to **create, view, search, and join events** while keeping track of upcoming and past activities.  
-EventEase simplifies event organization and participation through a clean interface, user authentication, and registration tracking.
+---
 
-### Core Features
-- User registration, login, and logout
-- Event creation with date picker
-- Upcoming and past event categorization
-- Join or leave events (except those you created)
-- Search events by **title** or **date**
-- View attendee count for each event
-- Admin panel for managing users and events
+## 🧩 Features & User Stories
+
+### 👥 As a Visitor (Not Logged In)
+- View a list of all upcoming public events.  
+- Register for an account using email and password.  
+- Log in to access personalized event features.
+
+### 🙋‍♀️ As a Registered User
+- View all available events on the homepage.  
+- Search for events by **name, date, or location**.  
+- View detailed event pages (title, description, date, location, and attendees).  
+- Join or leave events easily with one click.  
+- View all joined events in one place.  
+- Create new events with details like title, date, and location.  
+- Edit or delete only events they created.
+
+### 🧑‍💼 As an Event Creator
+- See how many people joined each of their events.  
+- Update or cancel events they created.  
+- Maintain accurate event information for attendees.
+
+### 🔐 As a System (Authentication)
+- Restrict event creation/joining to logged-in users.  
+- Ensure users can only modify or delete their own events.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category | Technology Used |
-|-----------|----------------|
-| **Backend Framework** | Django (Python) |
-| **Frontend** | HTML, CSS |
+| Component | Technology |
+|------------|-------------|
+| **Backend Framework** | Django 5.x |
+| **Frontend** | HTML5, CSS3, Django Templates |
 | **Database** | PostgreSQL |
-| **Authentication** | Django's built-in User model |
-| **Environment** | Virtualenv |
-| **Admin Interface** | Django Admin |
+| **Auth System** | Django Authentication |
+| **Language** | Python 3.12+ |
+| **Hosting (Optional)** | Render / Railway / Heroku |
 
 ---
 
-## 🧱 ERD Diagram
+## 🗂️ Data Model (ERD Overview)
 
-The following Entity Relationship Diagram (ERD) represents the core database design:
-
-User (Django default)
-│
-├──< Event
-│ ├── id (PK)
-│ ├── title
-│ ├── description
-│ ├── event_date
-│ ├── created_by (FK → User)
-│ ├── created_at
-│
-└──< Registration
-├── id (PK)
-├── user (FK → User)
-├── event (FK → Event)
-├── timestamp
-
+**Entities:**
+- **User** (Django default user model)
+- **Event**
+  - title
+  - description
+  - location
+  - event_date
+  - created_by → User
+- **Registration**
+  - user → User
+  - event → Event
+  - registered_at (timestamp)
 
 **Relationships:**
-- A **User** can create many **Events**.
-- A **User** can join multiple **Events**.
-- Each **Registration** links one user to one event.
+- One **User** can create many **Events**.
+- Many **Users** can join many **Events** (via **Registration**).
 
 ---
 
-## ⚙️ Installation Guide
+## ⚙️ Installation & Setup
 
-Follow these steps to set up and run the project locally.
-
-### 1. Clone the Repository
+### 1️⃣ Clone the Repository
 ```bash
 git clone https://git.generalassemb.ly/zeinali/capstone-project
 cd capstone-project
+```
 
-2. Create and Activate a Virtual Environment
-
-Windows
-
+### 2️⃣ Create Virtual Environment
+```bash
 python -m venv eventease-venv
-eventease-venv\Scripts\activate
+source eventease-venv/bin/activate  # (Windows: eventease-venv\Scripts\activate)
+```
 
-
-Mac/Linux
-
-python3 -m venv eventease-venv
-source eventease-venv/bin/activate
-
-3. Install Dependencies
+### 3️⃣ Install Dependencies
+```bash
 pip install -r requirements.txt
+```
 
-4. Configure the Database
+### 4️⃣ Configure PostgreSQL
+Create a database in **pgAdmin 4** (e.g., `eventease_db`),  
+then update `settings.py` → `DATABASES` section with your credentials.
 
-Create a PostgreSQL database called eventease_db using pgAdmin 4 or psql.
-
-Update the DATABASES section in your settings.py:
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'eventease_db',
-        'USER': 'postgres',
-        'PASSWORD': 'yourpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-
-5. Apply Migrations
+### 5️⃣ Apply Migrations
+```bash
 python manage.py makemigrations
 python manage.py migrate
+```
 
-6. Create a Superuser
+### 6️⃣ Create Superuser
+```bash
 python manage.py createsuperuser
+```
 
-7. Run the Server
+### 7️⃣ Run the Server
+```bash
 python manage.py runserver
+```
 
+Access the app at: **http://127.0.0.1:8000/**
 
-Then visit: http://127.0.0.1:8000/
+---
 
-👥 User Stories & Features
-As a User, I can:
+## 🧭 Folder Structure
 
-Register for an account.
-
-Log in and log out securely.
-
-Browse all upcoming and past events.
-
-Search for events by title or date.
-
-Join or cancel registration for events I didn’t create.
-
-View how many attendees are registered for each event.
-
-As an Organizer, I can:
-
-Create new events using a date picker.
-
-Edit or delete my events.
-
-Automatically see that I’m the creator (cannot join my own event).
-
-Track registrations to my events.
-
-🔍 Search & Filter
-
-Users can search events directly from the home page:
-
-Search by title keyword (case-insensitive)
-
-Filter by event date
-
-Example search usage:
-
-Type “Hackathon” → filters all events with “Hackathon” in title
-
-Select a specific date → shows only events happening on that day
-
-🧩 Optional Improvements
-
-Future enhancements could include:
-
-Event images or banners
-
-Pagination for large event lists
-
-Email or in-app notifications for new registrations
-
-RSVP limits and waitlists
-
-Google Calendar integration
-
-REST API endpoints for mobile integration
-
-⚠️ Challenges & Solutions
-Challenge	Solution
-TemplateSyntaxError for checking joined events	Moved logic into the view instead of the template
-Logout not working	Updated base.html to include correct URL name and form method
-Event creator joining their own event	Added condition in home view to hide “Join” button for event creator
-Missing search functionality	Implemented q and date query filters in the view
-Styling inconsistencies	Rebuilt base.html and style.css with a clean, consistent layout
-
-🧭 File Structure
+```
 eventease/
 │
-├── events/                     # Main app
-│   ├── models.py               # Event & Registration models
-│   ├── views.py                # FBVs and CBVs
-│   ├── templates/events/       # HTML templates
-│   │   ├── home.html
-│   │   ├── event_form.html
-│   │   ├── my_registrations.html
-│   │   └── base.html
-│   ├── forms.py                # EventForm
-│   ├── urls.py                 # App routes
+├── eventease/              # Project settings
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
 │
-├── static/css/style.css        # Styling
-├── eventease/settings.py       # Django settings
+├── events/                 # Main app
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── templates/
+│   │   └── events/
+│   └── static/css/
+│       └── style.css
+│
 ├── manage.py
-└── README.md                   # Project documentation
+└── README.md
+```
 
-🧑‍💻 Admin Panel Access
+---
 
-Visit: http://127.0.0.1:8000/admin
+## 🚀 Challenges & Solutions
 
-Login using the superuser credentials created earlier.
+| Challenge | Solution |
+|------------|-----------|
+| Implementing event join/leave logic | Used a `Registration` model to handle M2M relationships manually |
+| Restricting edit/delete to event creators | Implemented `UserPassesTestMixin` and request-user validation |
+| Displaying attendee count | Aggregated registrations per event in templates |
+| Filtering upcoming vs past events | Used `timezone.now()` comparison in the view |
+| Search feature | Implemented `icontains` filters on title, location, and date |
 
-🏁 Conclusion
+---
 
-EventEase provides a simple yet efficient system for managing and participating in events.
-It demonstrates core Django functionality such as authentication, CRUD operations, and relational data modeling — making it an ideal base for expanding into a full-featured event management platform.
+## 🏁 Summary
+EventEase delivers a clean and intuitive event management experience with secure authentication, flexible participation, and full CRUD event control.  
+It’s a simple yet powerful foundation for real-world event platforms.

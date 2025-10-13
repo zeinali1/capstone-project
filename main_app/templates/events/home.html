@@ -5,11 +5,12 @@
 <div class="container">
 
     <div class="search-section">
-        <form method="get" action="{% url 'home' %}">
-            <input type="text" name="q" value="{{ query }}" placeholder="Search by title or location..." class="search-input">
-            <button type="submit" class="search-btn">Search</button>
-            {% if query %}
-                <a href="{% url 'home' %}" class="clear-btn">Clear</a>
+        <form method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search by title or location" value="{{ query }}">
+            <input type="date" name="date" value="{{ date_query }}">
+            <button type="submit">Search</button>
+            {% if query or date_query %}
+            <a href="{% url 'home' %}" class="clear-btn">Clear</a>
             {% endif %}
         </form>
     </div>
@@ -24,6 +25,9 @@
                     <p><strong>Date:</strong> {{ event.event_date|date:"F j, Y, g:i A" }}</p>
                     <p><strong>Location:</strong> {{ event.location }}</p>
                     <p><strong>Created by:</strong> {{ event.created_by.username }}</p>
+                    {% if event.is_mine %}
+                    <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
+                    {% endif %}
 
                     <div class="event-actions">
                         {% if event.is_mine %}

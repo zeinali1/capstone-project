@@ -43,7 +43,7 @@ Visitors can explore upcoming events, while registered users can host, edit, and
 | **Database** | PostgreSQL |
 | **Auth System** | Django Authentication |
 | **Language** | Python 3.12+ |
-| **Hosting (Optional)** | Render / Railway / Heroku |
+| **Hosting (Optional)** | Render |
 
 ---
 

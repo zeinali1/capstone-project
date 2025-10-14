@@ -9,23 +9,20 @@ import dj_database_url
 
 # BASE DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
+
+# Load local .env if it exists
+if (BASE_DIR / ".env.local").exists():
+    load_dotenv(BASE_DIR / ".env.local")
+else:
+    load_dotenv(BASE_DIR / ".env")  # Render uses environment vars anyway
 
 # SECURITY
 SECRET_KEY = os.getenv("SECRET_KEY", "insecure-default-key")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# ALLOWED HOSTS
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.onrender.com',
-]
-
-# CSRF
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.onrender.com'
-]
+# HOSTS
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'https://*.onrender.com']
 
 # APPLICATIONS
 INSTALLED_APPS = [
@@ -49,8 +46,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# Add WhiteNoise middleware for static files
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+# Whitenoise for static files
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 ROOT_URLCONF = "eventease_project.urls"
 
@@ -72,29 +69,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "eventease_project.wsgi.application"
 
-# DATABASE CONFIGURATION
+# DATABASE
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
+    # Production / Render
     DATABASES = {
         "default": dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=not DEBUG
+            DATABASE_URL, conn_max_age=600, ssl_require=True
         )
     }
 else:
+    # Local development
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": os.getenv("DB_NAME", "events"),
             "USER": os.getenv("DB_USER", "postgres"),
-            "PASSWORD": os.getenv("DB_PASSWORD", "1234"),
+            "PASSWORD": os.getenv("DB_PASSWORD", "H0612z"),
             "HOST": os.getenv("DB_HOST", "localhost"),
             "PORT": os.getenv("DB_PORT", "5432"),
         }
     }
 
-# PASSWORD VALIDATORS
+# PASSWORD VALIDATION
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -109,9 +106,9 @@ USE_I18N = True
 USE_TZ = True
 
 # STATIC FILES
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # AUTH
 LOGIN_URL = "login"

@@ -1,32 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="event-detail">
-    <h1>{{ event.title }}</h1>
-    <p><strong>Date:</strong> {{ event.event_date }}</p>
-    <p><strong>Location:</strong> {{ event.location }}</p>
-    <p><strong>Description:</strong> {{ event.description }}</p>
+<main class="event-detail-container">
+    <div class="event-card">
+        <h2 style="color:#2c3e50; margin-bottom:10px;">{{ event.title }}</h2>
+        <p><strong>Date:</strong> {{ event.event_date|date:"F j, Y, g:i A" }}</p>
+        <p><strong>Location:</strong> {{ event.location }}</p>
+        <p><strong>Description:</strong> {{ event.description }}</p>
 
-    {% if user.is_authenticated %}
-        {% if is_creator %}
-            <p><em>You created this event.</em></p>
-            <p><strong>Participants Joined:</strong> {{ participant_count }}</p>
-            <a href="{% url 'edit_event' event.pk %}" class="btn btn-edit">Edit</a>
-            <a href="{% url 'delete_event' event.pk %}" class="btn btn-delete">Delete</a>
-        {% else %}
-            {% if is_joined %}
-                <form action="{% url 'leave_event' event.pk %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-leave">Leave Event</button>
-                </form>
+        <p><strong>Attending:</strong> {{ participant_count }}</p>
+
+        <hr style="margin: 15px 0; border-color: #eee;">
+
+        {% if user.is_authenticated %}
+            {% if is_creator %}
+                <p><em>You created this event.</em></p>
+                <div class="btn-row">
+                    <a href="{% url 'edit_event' event.pk %}" class="btn btn-edit">Edit</a>
+                    <a href="{% url 'delete_event' event.pk %}" class="btn btn-delete">Delete</a>
+                </div>
             {% else %}
-                <form action="{% url 'join_event' event.pk %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-join">Join Event</button>
-                </form>
+                {% if is_joined %}
+                    <form action="{% url 'leave_event' event.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-leave">Leave Event</button>
+                    </form>
+                {% else %}
+                    <form action="{% url 'join_event' event.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-join">Join Event</button>
+                    </form>
+                {% endif %}
             {% endif %}
+        {% else %}
+            <p><a href="{% url 'login' %}" class="btn btn-login">Log in</a> to join this event.</p>
         {% endif %}
-    {% else %}
-        <p><a href="{% url 'login' %}">Log in</a> to join this event.</p>
-    {% endif %}
-</div>
+
+        <div style="margin-top: 20px;">
+            <a href="{% url 'home' %}" style="color:#2c3e50; text-decoration:none;">&larr; Back to all events</a>
+        </div>
+    </div>
+</main>
 {% endblock %}

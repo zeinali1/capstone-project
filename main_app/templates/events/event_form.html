@@ -1,8 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>{% if form.instance.pk %}Edit Event{% else %}Create Event{% endif %}</h2>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class='btn'>Save</button>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn">Save</button>
 </form>
+
+{% if not form.instance.pk %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const dateInput = document.querySelector('input[type="datetime-local"]');
+    if (dateInput) {
+      const now = new Date();
+      const localISOTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+      dateInput.min = localISOTime;
+    }
+  });
+</script>
+{% endif %}
 {% endblock %}

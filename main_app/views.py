@@ -14,11 +14,12 @@ from .forms import EventForm, RegisterForm
 # Create your views here.
 def home(request):
     current_time = timezone.now()
-    query = request.GET.get('q', '').strip()  # for title/location search
-    date_query = request.GET.get('date', '').strip()  # for date search (YYYY-MM-DD)
+    query = request.GET.get('q', '').strip()
+    date_query = request.GET.get('date', '').strip()
+    category = request.GET.get('category', '').strip()
 
-    upcoming_events = Event.objects.filter(event_date__gte=current_time).annotate(attendee_count=Count('registrations')).order_by('event_date')
-    past_events = Event.objects.filter(event_date__lt=current_time).annotate(attendee_count=Count('registrations')).order_by('-event_date')
+    upcoming_events = Event.objects.filter(event_date__gte=current_time)
+    past_events = Event.objects.filter(event_date__lt=current_time)
 
     if query:
         search_filter = Q(title__icontains=query) | Q(location__icontains=query)
@@ -28,6 +29,13 @@ def home(request):
     if date_query:
         upcoming_events = upcoming_events.filter(event_date__date=date_query)
         past_events = past_events.filter(event_date__date=date_query)
+
+    if category:
+        upcoming_events = upcoming_events.filter(category=category)
+        past_events = past_events.filter(category=category)
+
+    upcoming_events = upcoming_events.annotate(attendee_count=Count('registrations')).order_by('event_date')
+    past_events = past_events.annotate(attendee_count=Count('registrations')).order_by('-event_date')
 
     if request.user.is_authenticated:
         joined_event_ids = Registration.objects.filter(user=request.user).values_list('event_id', flat=True)
@@ -43,7 +51,9 @@ def home(request):
         'upcoming_events': upcoming_events,
         'past_events': past_events,
         'query': query,
-        'date_query': date_query
+        'date_query': date_query,
+        'category': category,
+        'categories': Event.CATEGORY_CHOICES,
     })
 
 @login_required

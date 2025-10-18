@@ -4,16 +4,22 @@
 <div class="container" style="max-width: 900px; margin: 40px auto;">
     <h1 style="text-align: center; color: #2c3e50;">Upcoming Events</h1>
 
-    <div class="search-section">
-        <form method="get" action="{% url 'home' %}">
-            <input type="text" name="q" class="search-input" placeholder="Search by title or location" value="{{ request.GET.q }}">
-            <input type="date" name="date" class="search-input" value="{{ request.GET.date }}">
-            <button type="submit" class="search-btn">Search</button>
-            {% if request.GET.q or request.GET.date %}
-                <a href="{% url 'home' %}" class="clear-btn">Clear</a>
-            {% endif %}
-        </form>
-    </div>
+    <div class="search-section" style="margin-bottom: 30px;">
+        <form method="get" action="{% url 'home' %}" class="mb-3 d-flex gap-2 flex-wrap justify-content-center">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by title or location" class="form-control w-auto">
+            <input type="date" name="date" value="{{ date_query }}" class="form-control w-auto">
+            <select name="category" class="form-select w-auto">
+                 <option value="">All Categories</option>
+                 {% for key, value in categories %}
+                 <option value="{{ key }}" {% if key == category %}selected{% endif %}>{{ value }}</option>
+                 {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">Filter</button>
+                {% if query or date_query or category %}
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">Clear</a>
+                {% endif %}
+            </form>
+        </div>
 
     {% if upcoming_events %}
         <ul class="event-list">

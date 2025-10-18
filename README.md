@@ -154,8 +154,7 @@ eventease/
 
 - **Event Reminders & Notifications** – Send users email or in-app reminders before events.  
 - **User Profiles** – Let users manage profiles and view event history.  
-- **RSVP Comments / Chat** – Enable attendee interaction within events.  
-- **Event Categories** – Filter events by tags (e.g., Workshop, Meetup, Conference).  
+- **RSVP Comments / Chat** – Enable attendee interaction within events.    
 - **Map Integration** – Display event locations using Google Maps or Leaflet.  
 - **Dark Mode** – Add a theme switch for better UX.  
 - **Pagination / Infinite Scroll** – Handle large event lists efficiently.  

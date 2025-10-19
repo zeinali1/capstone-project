@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.db.models import Count, Q
 from django.contrib.auth import login
 from django.views import View
+from django.core.paginator import Paginator
 
 from .models import Event, Registration
 from .forms import EventForm, RegisterForm
@@ -37,19 +38,28 @@ def home(request):
     upcoming_events = upcoming_events.annotate(attendee_count=Count('registrations')).order_by('event_date')
     past_events = past_events.annotate(attendee_count=Count('registrations')).order_by('-event_date')
 
+    upcoming_paginator = Paginator(upcoming_events, 5)  # 5 per page
+    past_paginator = Paginator(past_events, 5)
+
+    upcoming_page_number = request.GET.get('upcoming_page')
+    past_page_number = request.GET.get('past_page')
+
+    upcoming_page = upcoming_paginator.get_page(upcoming_page_number)
+    past_page = past_paginator.get_page(past_page_number)
+
     if request.user.is_authenticated:
         joined_event_ids = Registration.objects.filter(user=request.user).values_list('event_id', flat=True)
-        for event in list(upcoming_events) + list(past_events):
+        for event in list(upcoming_page) + list(past_page):
             event.is_joined = event.id in joined_event_ids
             event.is_mine = event.created_by == request.user
     else:
-        for event in list(upcoming_events) + list(past_events):
+        for event in list(upcoming_page) + list(past_page):
             event.is_joined = False
             event.is_mine = False
 
     return render(request, 'events/home.html', {
-        'upcoming_events': upcoming_events,
-        'past_events': past_events,
+        'upcoming_events': upcoming_page,
+        'past_events': past_page,
         'query': query,
         'date_query': date_query,
         'category': category,
@@ -148,10 +158,3 @@ class MyJoinedEventsView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.registrations.select_related('event').order_by('event__event_date')
     
-class PastEventsView(ListView):
-    model = Event
-    template_name = 'events/past_events.html'
-    context_object_name = 'events'
-
-    def get_queryset(self):
-        return Event.objects.filter(event_date__lt=timezone.now()).order_by('-event_date')

@@ -2,30 +2,34 @@
 {% block content %}
 
 <div class="container" style="max-width: 900px; margin: 40px auto;">
-    <h1 style="text-align: center; color: #2c3e50;">Upcoming Events</h1>
-
     <div class="search-section" style="margin-bottom: 30px;">
-        <form method="get" action="{% url 'home' %}" class="mb-3 d-flex gap-2 flex-wrap justify-content-center">
+        <form method="get" action="{% url 'home' %}" id="filter-form" class="mb-3 d-flex gap-2 flex-wrap justify-content-center">
             <input type="text" name="q" value="{{ query }}" placeholder="Search by title or location" class="form-control w-auto">
-            <input type="date" name="date" value="{{ date_query }}" class="form-control w-auto">
+            <input type="date" name="date" value="{{ date_query }}" class="form-control w-auto" min="{{ today|date:'Y-m-d' }}">
             <select name="category" class="form-select w-auto">
-                 <option value="">All Categories</option>
-                 {% for key, value in categories %}
-                 <option value="{{ key }}" {% if key == category %}selected{% endif %}>{{ value }}</option>
-                 {% endfor %}
-                </select>
-                <button type="submit" class="btn btn-primary">Filter</button>
-                {% if query or date_query or category %}
+                <option value="">All Categories</option>
+                {% for key, value in categories %}
+                    <option value="{{ key }}" {% if key == category %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            {% if query or date_query or category %}
                 <a href="{% url 'home' %}" class="btn btn-outline-secondary">Clear</a>
-                {% endif %}
-            </form>
-        </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <h2 style="text-align: center; color: #2c3e50;">Upcoming Events</h2>
 
     {% if upcoming_events %}
-        <ul class="event-list">
+        <ul id="event-list" class="event-list">
             {% for event in upcoming_events %}
                 <li class="event-card">
-                    <p><strong><a href="{% url 'event_detail' event.pk %}" style="color:#2c3e50; text-decoration:none;">{{ event.title }}</a></strong></p>
+                    <p><strong>
+                        <a href="{% url 'event_detail' event.pk %}" style="color:#2c3e50; text-decoration:none;">
+                            {{ event.title }}
+                        </a>
+                    </strong></p>
                     <p>{{ event.location }} — {{ event.event_date|date:"M d, Y H:i" }}</p>
                     <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
                     <p><em>Created by {{ event.created_by.username }}</em></p>
@@ -53,8 +57,14 @@
                 </li>
             {% endfor %}
         </ul>
+
+        {% if is_paginated and page_obj.has_next %}
+            <div id="load-more" data-next-page="{{ page_obj.next_page_number }}" class="loading-spinner-container">
+                <div class="spinner"></div>
+            </div>
+        {% endif %}
     {% else %}
-        <p style="text-align:center; color:#555;">No upcoming events found.</p>
+        <p style="text-align:center; color:#555;">No Upcoming events available.</p>
     {% endif %}
 
     <hr style="margin: 40px auto; width: 60%; border-top: 1px solid #ccc;">
@@ -76,5 +86,60 @@
         <p style="text-align:center; color:#555;">No past events available.</p>
     {% endif %}
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const loadMore = document.getElementById("load-more");
+    const eventList = document.getElementById("event-list");
+
+    if (!loadMore) return;
+
+    let loading = false;
+    let nextPage = loadMore.dataset.nextPage;
+    let throttleTimeout = null;
+
+    const loadNextPage = async () => {
+        if (!nextPage || loading) return;
+        loading = true;
+
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set("page", nextPage);
+
+            const response = await fetch(url);
+            const text = await response.text();
+
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(text, "text/html");
+
+            const newEvents = htmlDoc.querySelectorAll("#event-list li");
+            const newLoadMore = htmlDoc.querySelector("#load-more");
+
+            newEvents.forEach(event => eventList.appendChild(event));
+
+            if (newLoadMore) {
+                nextPage = newLoadMore.dataset.nextPage;
+            } else {
+                nextPage = null;
+                loadMore.remove();
+            }
+        } catch (error) {
+            console.error("Error loading more events:", error);
+        } finally {
+            loading = false;
+        }
+    };
+
+    window.addEventListener("scroll", () => {
+        if (throttleTimeout) return;
+        throttleTimeout = setTimeout(() => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
+                loadNextPage();
+            }
+            throttleTimeout = null;
+        }, 200);
+    });
+});
+</script>
 
 {% endblock %}

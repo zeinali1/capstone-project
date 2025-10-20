@@ -15,7 +15,7 @@ class Event(models.Model):
         ]
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    location = models.CharField(max_length=100)
+    location = models.CharField(max_length=255)
     event_date = models.DateTimeField()
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='created_events', null=True)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default="other")

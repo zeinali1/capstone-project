@@ -30,7 +30,15 @@
                             {{ event.title }}
                         </a>
                     </strong></p>
-                    <p>{{ event.location }} — {{ event.event_date|date:"M d, Y H:i" }}</p>
+                    <p style="display: flex; align-items: center; gap: 6px; color: #555; margin: 6px 0;">
+                        <i class="bi bi-geo-alt-fill" style="color: #007bff;"></i>
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ event.location|urlencode }}" target="_blank" title="View on Google Maps" style="color: #007bff; text-decoration: none; transition: color 0.2s;">
+                            {{ event.location }}
+                        </a>
+                        <span style="margin: 0 6px; color: #999;">•</span>
+                        <span>{{ event.event_date|date:"M d, Y H:i" }}</span>
+                    </p>
+
                     <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
                     <p><em>Created by {{ event.created_by.username }}</em></p>
 
@@ -76,7 +84,16 @@
             {% for event in past_events %}
                 <li class="event-card past">
                     <p><strong>{{ event.title }}</strong></p>
-                    <p>{{ event.location }} — {{ event.event_date|date:"M d, Y H:i" }}</p>
+                    <p style="display: flex; align-items: center; gap: 6px; color: #555; margin: 6px 0;">
+                        <i class="bi bi-geo-alt-fill" style="color: #007bff;"></i>
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ event.location|urlencode }}" target="_blank" title="View on Google Maps"
+                        style="color: #007bff; text-decoration: none; transition: color 0.2s;">
+                        {{ event.location }}
+                    </a>
+                    <span style="margin: 0 6px; color: #999;">•</span>
+                    <span>{{ event.event_date|date:"M d, Y H:i" }}</span>
+                </p>
+
                     <p><strong>Attendees:</strong> {{ event.attendee_count }}</p>
                     <p><em>Created by {{ event.created_by.username }}</em></p>
                 </li>

@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -14,6 +16,11 @@ urlpatterns = [
    path('event/<int:pk>/leave/', views.LeaveEventView.as_view(), name='leave_event'),
 
    path('my-events/', views.MyJoinedEventsView.as_view(), name='my_joined_events'),
-
    path('my-registrations/', views.my_registrations, name='my_registrations'),
+
+   path('profile/', views.ProfileDetailView.as_view(), name='profile'),
+    path('profile/edit/', views.ProfileUpdateView.as_view(), name='edit_profile'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

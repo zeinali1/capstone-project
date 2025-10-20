@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4 text-center">
+    <h2>{{ user.username }}’s Profile</h2>
+
+    {% if user.profile.profile_image %}
+        <img src="{{ user.profile.profile_image.url }}" 
+             class="rounded-circle mt-3" width="150" height="150">
+    {% else %}
+        <img src="{% static 'default_profile.png' %}" 
+             class="rounded-circle mt-3" width="150" height="150">
+    {% endif %}
+
+    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Location:</strong> {{ user.profile.location|default:"Not specified" }}</p>
+    <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
+    <p><strong>Birth Date:</strong> {{ user.profile.birth_date|date:"M d, Y" }}</p>
+
+    <a href="{% url 'edit_profile' %}" class="btn btn-primary mt-3">Edit Profile</a>
+</div>
+{% endblock %}

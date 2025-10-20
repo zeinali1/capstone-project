@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .models import Event
+from .models import Event, Profile
 
 
 class EventForm(forms.ModelForm):
@@ -37,3 +37,23 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+class UserForm(forms.ModelForm):
+    """Form to edit basic user information."""
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+
+class ProfileForm(forms.ModelForm):
+    """Form to edit profile details."""
+    class Meta:
+        model = Profile
+        fields = ['bio', 'location', 'birth_date', 'profile_image']
+        widgets = {
+            'birth_date': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}
+            ),
+            'bio': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+        }

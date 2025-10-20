@@ -9,8 +9,8 @@ from django.contrib.auth import login
 from django.views import View
 from django.core.paginator import Paginator
 
-from .models import Event, Registration
-from .forms import EventForm, RegisterForm
+from .models import Event, Registration, Profile
+from .forms import EventForm, RegisterForm, ProfileForm, UserForm
 
 # Create your views here.
 def home(request):
@@ -157,4 +157,36 @@ class MyJoinedEventsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.request.user.registrations.select_related('event').order_by('event__event_date')
-    
+
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    model = Profile
+    template_name = 'profile_detail.html'
+
+    def get_object(self):
+        return self.request.user.profile
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'profile_edit.html'
+    success_url = reverse_lazy('profile')
+
+    def get_object(self):
+        return self.request.user.profile
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user_form'] = UserForm(instance=self.request.user)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=self.object)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return self.form_valid(profile_form)
+        else:
+            return self.form_invalid(profile_form)

@@ -37,6 +37,7 @@
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'create_event' %}">Add Event</a></li>
                     <li><a href="{% url 'my_joined_events' %}">My Events</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
                     <li>
                         <form action="{% url 'logout' %}" method="post" class="logout-form">
                             {% csrf_token %}

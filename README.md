@@ -151,10 +151,8 @@ eventease/
 ---
 
 ## 🧭 Future Improvements / Stretch Goals
-
-- **Event Reminders & Notifications** – Send users email or in-app reminders before events.    
-- **RSVP Comments / Chat** – Enable attendee interaction within events.    
-- **Map Integration** – Display event locations using Google Maps or Leaflet.  
+   
+- **RSVP Comments / Chat** – Enable attendee interaction within events.     
 - **Dark Mode** – Add a theme switch for better UX.  
 - **Admin Dashboard** – Provide analytics and management tools.  
 - **Mobile Optimization** – Fully responsive design for all devices.  

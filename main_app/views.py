@@ -9,10 +9,9 @@ from django.contrib.auth import login
 from django.views import View
 from django.core.paginator import Paginator
 
-from .models import Event, Registration, Profile
+from .models import Event, Registration, Profile, Notification
 from .forms import EventForm, RegisterForm, ProfileForm, UserForm
 
-# Create your views here.
 def home(request):
     current_time = timezone.now()
     query = request.GET.get('q', '').strip()
@@ -165,7 +164,6 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     def get_object(self):
         return self.request.user.profile
 
-
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileForm
@@ -190,3 +188,41 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             return self.form_valid(profile_form)
         else:
             return self.form_invalid(profile_form)
+
+class AllNotificationsView(ListView):
+    model = Notification
+    template_name = 'events/notifications.html'
+    context_object_name = 'notifications'
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user).order_by('-created_at')
+
+@login_required
+def mark_notification_read(request, pk):
+    note = get_object_or_404(Notification, pk=pk, user=request.user)
+    note.is_read = True
+    note.save()
+    return redirect('all_notifications')  
+
+from django.http import JsonResponse
+
+@login_required
+def check_new_notifications(request):
+    """Return unread notification count and list (JSON)."""
+    unread = Notification.objects.filter(
+        user=request.user, is_read=False
+    ).order_by('-created_at')[:5]
+
+    data = {
+        'count': unread.count(),
+        'notifications': [
+            {
+                'id': n.id,
+                'message': n.message,
+                'created_at': n.created_at.strftime("%Y-%m-%d %H:%M"),
+            }
+            for n in unread
+        ],
+    }
+    return JsonResponse(data)
+

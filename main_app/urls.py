@@ -19,7 +19,11 @@ urlpatterns = [
    path('my-registrations/', views.my_registrations, name='my_registrations'),
 
    path('profile/', views.ProfileDetailView.as_view(), name='profile'),
-    path('profile/edit/', views.ProfileUpdateView.as_view(), name='edit_profile'),
+   path('profile/edit/', views.ProfileUpdateView.as_view(), name='edit_profile'),
+
+   path('notifications/', views.AllNotificationsView.as_view(), name='all_notifications'),
+   path('notifications/read/<int:pk>/', views.mark_notification_read, name='mark_notification_read'),
+   path('notifications/check/', views.check_new_notifications, name='check_new_notifications'),
 ]
 
 if settings.DEBUG:

@@ -152,10 +152,8 @@ eventease/
 
 ## 🧭 Future Improvements / Stretch Goals
    
-- **RSVP Comments / Chat** – Enable attendee interaction within events.     
-- **Dark Mode** – Add a theme switch for better UX.  
-- **Admin Dashboard** – Provide analytics and management tools.  
-- **Mobile Optimization** – Fully responsive design for all devices.  
+- **RSVP Comments / Chat** – Enable attendee interaction within events.       
+- **Admin Dashboard** – Provide analytics and management tools.    
 
 ---
 

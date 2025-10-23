@@ -164,6 +164,36 @@ nav {
   margin: 20px 0;
 }
 
+/* ===================== EVENT LOCATION TOOLTIP ===================== */
+.event-location {
+    display: inline-block;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #007bff;
+    text-decoration: none;
+    position: relative;
+}
+
+.event-location:hover {
+    color: #0056b3;
+}
+
+.event-location[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(100% + 8px);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
 /* ===================== BUTTONS ===================== */
 .btn {
   display: inline-block;
